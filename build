@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pegjs badscript.pegjs parser.js && jasmine && uglifyjs parser.js --mangle --output dist/parser.min.js
+
