@@ -43,7 +43,7 @@ module.exports = (function() {
         peg$c4 = function(name) {
           return {
             type: 'Identifier',
-            name: [name[0]].concat(name[1]).join('')
+            name: flatten(name).join('')
           }
         },
 
@@ -282,6 +282,26 @@ module.exports = (function() {
 
       return s0;
     }
+
+
+
+    function flatten(array) {
+      var flat = [], i
+      for (i = 0; i < array.length; i++) {
+        if (isArray(array[i])) {
+          flat = flat.concat(flatten(array[i]))
+        } else {
+          flat.push(array[i])
+        }
+      }
+      return flat
+    }
+
+    function isArray(thing) {
+      return Object.prototype.toString.call(thing) === '[object Array]'
+    }
+
+
 
     peg$result = peg$startRuleFunction();
 
