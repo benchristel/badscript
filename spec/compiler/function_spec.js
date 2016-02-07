@@ -22,7 +22,7 @@ describe('compiling functions', function() {
     })
 
     it('works for a function with two parameters', function() {
-        expect(compileJS("(one two){ 1 }")).toEqual("function(one,two){return 1}")
+        expect(compileJS("(one, two){ 1 }")).toEqual("function(one,two){return 1}")
     })
 
     it('works for a curried function', function() {

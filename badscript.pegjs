@@ -143,9 +143,9 @@ ParameterList
 }
 
 Parameters
-  = first:Parameter rest:(Space Parameter)*
+  = first:Parameter rest:(',' _ Parameter)*
 {
-  return [first].concat(rest.map(function(i) {return i[1]}))
+  return [first].concat(rest.map(function(i) {return i[2]}))
 }
 
 Parameter = i:Identifier defaultValue:(_ ':' _ Expression)?
@@ -159,9 +159,6 @@ Parameter = i:Identifier defaultValue:(_ ':' _ Expression)?
 
 FunctionBody
   = '{' _ expr:Expression _ '}' { return expr }
-
-Space "whitespace"
-  = [ \t\n\r]+
 
 _ "whitespace"
   = [ \t\n\r]*
