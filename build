@@ -2,4 +2,6 @@
 
 rules="Identifier,String"
 
-pegjs --allowed-start-rules $rules badscript.pegjs parser.js && jasmine && uglifyjs parser.js --mangle --output dist/parser.min.js
+pegjs --allowed-start-rules $rules badscript.pegjs parser.js \
+  && jasmine \
+  && uglifyjs parser.js --mangle --output dist/parser.min.js
