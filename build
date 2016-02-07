@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rules="Identifier,String"
+rules="Identifier,String,Expression"
 
 pegjs --allowed-start-rules $rules badscript.pegjs parser.js \
   && jasmine \

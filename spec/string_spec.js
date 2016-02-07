@@ -57,7 +57,7 @@ describe("a string", function() {
         expect(result.type).toEqual("String")
         expect(result.parts).toEqual([
             {type: 'StringData', value: 'hello ', quote: '"'},
-            {type: 'Expression', value: {type: 'Identifier', name: 'name'}},
+            {type: 'Identifier', name: 'name'},
             {type: 'StringData', value: '!', quote: '"'},
         ])
     })
@@ -68,7 +68,7 @@ describe("a string", function() {
         expect(result.type).toEqual("String")
         expect(result.parts).toEqual([
             {type: 'StringData', value: 'hello ', quote: "'"},
-            {type: 'Expression', value: {type: 'Identifier', name: 'name'}},
+            {type: 'Identifier', name: 'name'},
             {type: 'StringData', value: '!', quote: "'"},
         ])
     })

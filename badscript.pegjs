@@ -18,13 +18,10 @@ function isArray(thing) {
 
 }
 
-Expression = value: Identifier
-  {
-  return {
-    type: 'Expression',
-    value: value
-    }
-  }
+Expression
+  = Identifier
+  / Function
+  / Number
 
 Identifier = name: ([A-Za-z_][A-Za-z0-9_]*)
 {
@@ -34,6 +31,14 @@ Identifier = name: ([A-Za-z_][A-Za-z0-9_]*)
   }
 }
 
+Number
+  = digits:([0-9] / [1-9] Number)
+{
+  return {
+    type: 'Number',
+    value: flatten(digits).join('')
+  }
+}
 
 /**
  * STRINGS
@@ -106,3 +111,49 @@ Interpolation
     {
     return expr
     }
+
+/**
+ * FUNCTIONS
+ *
+ */
+
+Function
+  = maybeParams: ParameterList? _ body: FunctionBody
+{
+  var params = maybeParams ? maybeParams : []
+  return {
+    type: 'Function',
+    parameters: params,
+    body: body
+  }
+}
+
+ParameterList
+  = '(' params:Parameters? ')'
+{
+  return params
+}
+
+Parameters
+  = first:Parameter rest:(Space Parameter)*
+{
+  return [first].concat(rest.map(function(i) {return i[1]}))
+}
+
+Parameter = i:Identifier defaultValue:(_ ':' _ Expression)?
+{
+  return {
+    type: 'Parameter',
+    name: i.name,
+    value: defaultValue ? defaultValue[3] : null
+  }
+}
+
+FunctionBody
+  = '{' _ Expression _ '}'
+
+Space "whitespace"
+  = [ \t\n\r]+
+
+_ "whitespace"
+  = [ \t\n\r]*
