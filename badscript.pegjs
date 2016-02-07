@@ -18,6 +18,13 @@ function isArray(thing) {
 
 }
 
+Expression = value: Identifier
+  {
+  return {
+    type: 'Expression',
+    value: value
+    }
+  }
 
 Identifier = name: ([A-Za-z_][A-Za-z0-9_]*)
 {
@@ -26,3 +33,76 @@ Identifier = name: ([A-Za-z_][A-Za-z0-9_]*)
     name: flatten(name).join('')
   }
 }
+
+
+/**
+ * STRINGS
+ *
+ */
+
+String
+  = '"' parts: (DoubleQuoteStringCharSequence / Interpolation)* '"'
+{
+  return {
+    type: 'String',
+    parts: parts,
+    quote: '"'
+  }
+}
+  / "'" parts: (SingleQuoteStringCharSequence / Interpolation)* "'"
+{
+  return {
+    type: 'String',
+    parts: parts,
+    quote: "'"
+  }
+}
+
+DoubleQuoteStringCharSequence 'string data' = chars: DoubleQuoteStringChar+
+{
+  return {
+    type: 'StringData',
+    value: chars.join(''),
+    quote: '"'
+  }
+}
+
+SingleQuoteStringCharSequence 'string data' = chars: SingleQuoteStringChar+
+{
+  return {
+    type: 'StringData',
+    value: chars.join(''),
+    quote: "'"
+  }
+}
+
+DoubleQuoteStringChar 'a string character'
+  = !('"' / '\\') char: .
+    {
+    return char
+    }
+  / char: EscapeSequence
+    {
+    return char
+    }
+
+SingleQuoteStringChar 'a string character'
+  = !("'" / '\\') char: .
+    {
+    return char
+    }
+  / char: EscapeSequence
+    {
+    return char
+    }
+
+EscapeSequence
+  = '\\n'
+  / '\\"'
+  / "\\'"
+
+Interpolation
+  = '\\(' expr: Expression ')'
+    {
+    return expr
+    }
