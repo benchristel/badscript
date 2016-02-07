@@ -127,6 +127,14 @@ Function
     body: body
   }
 }
+  / params: ParameterList _ body: Function
+{
+  return {
+    type: 'Function',
+    parameters: params,
+    body: body
+  }
+}
 
 ParameterList
   = '(' params:Parameters? ')'
@@ -150,7 +158,7 @@ Parameter = i:Identifier defaultValue:(_ ':' _ Expression)?
 }
 
 FunctionBody
-  = '{' _ Expression _ '}'
+  = '{' _ expr:Expression _ '}' { return expr }
 
 Space "whitespace"
   = [ \t\n\r]+

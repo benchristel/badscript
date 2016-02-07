@@ -5,18 +5,22 @@ module.exports = (function() {
         compile: compile
     }
 
-    function compile(rootNode) {
-        switch (rootNode.type) {
+    function compile(node) {
+        switch (node.type) {
             case 'String':
-                return compileString(rootNode)
+                return compileString(node)
             case 'StringData':
-                return compileStringData(rootNode)
+                return compileStringData(node)
             case 'Expression':
-                return compileExpression(rootNode)
+                return compileExpression(node)
             case 'Identifier':
-                return rootNode.name
+                return node.name
+            case 'Function':
+                return compileFunction(node)
+            case 'Number':
+                return compileNumber(node)
         }
-        throw "unidentified node type for compilation: "+rootNode.type
+        throw "unidentified node type for compilation: "+node.type
     }
 
     function compileString(node) {
@@ -29,5 +33,28 @@ module.exports = (function() {
 
     function compileExpression(node) {
         return compile(node.value)
+    }
+
+    function compileFunction(node) {
+        function getName(param) {
+            return param.name
+        }
+
+        function paramInitialization(params) {
+            return params
+                .filter(function(p) { return p.value !== null })
+                .map(function(p) {
+                    return p.name + '=' + p.name + '!==undefined?' + p.name + ':' + compile(p.value) + ';'
+                }).join('')
+        }
+
+        return 'function(' + node.parameters.map(getName).join(',') + '){'+
+            paramInitialization(node.parameters)+
+            'return '+compile(node.body)+
+            '}'
+    }
+
+    function compileNumber(node) {
+        return node.value
     }
 })();
