@@ -19,9 +19,48 @@ function isArray(thing) {
 }
 
 Expression
+  = first:PipeableExpression rest:(_ '>>' _ PipeableExpression)*
+{
+  if (rest.length == 0) {
+    return first
+  }
+
+  return {
+    type: 'Expression',
+    pipeableExpressions: [first].concat(rest.map(function(exp) { return exp[3] }))
+  }
+}
+  / String
+  / Number
+
+PipeableExpression
+  = head:InvocableExpression tail:Invocation*
+{
+  if (tail.length == 0) {
+    return head
+  }
+
+  return {
+    type: 'PipeableExpression',
+    invocable: head,
+    invocations: tail
+  }
+}
+
+InvocableExpression
   = Identifier
   / Function
-  / Number
+
+Invocation
+  = '(' first:Expression? rest:(',' _ Expression)* ')'
+{
+  var firstArg = (first == null ? [] : [first])
+
+  return {
+    type: 'Invocation',
+    arguments: firstArg.concat(rest.map(function(x) { return x[2] }))
+  }
+}
 
 Identifier = name: ([A-Za-z_][A-Za-z0-9_]*)
 {

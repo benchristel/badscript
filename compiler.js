@@ -13,6 +13,10 @@ module.exports = (function() {
                 return compileStringData(node)
             case 'Expression':
                 return compileExpression(node)
+            case 'PipeableExpression':
+                return compilePipeableExpression(node)
+            case 'Invocation':
+                return compileInvocation(node)
             case 'Identifier':
                 return node.name
             case 'Function':
@@ -32,7 +36,20 @@ module.exports = (function() {
     }
 
     function compileExpression(node) {
-        return compile(node.value)
+        // translate pipes, e.g. a >> b >> c, into function composition, e.g.
+        // c(b(a))
+
+        var expressions = node.pipeableExpressions.slice().reverse()
+
+        return expressions.map(function(ex) { return compile(ex) }).join('(') + repeatString(')', expressions.length - 1)
+    }
+
+    function compilePipeableExpression(node) {
+        return compile(node.invocable) + node.invocations.map(compile).join('')
+    }
+
+    function compileInvocation(node) {
+        return '(' + node.arguments.map(compile).join(',') + ')'
     }
 
     function compileFunction(node) {
@@ -48,13 +65,21 @@ module.exports = (function() {
                 }).join('')
         }
 
-        return 'function(' + node.parameters.map(getName).join(',') + '){'+
+        return '(function(' + node.parameters.map(getName).join(',') + '){'+
             paramInitialization(node.parameters)+
             'return '+compile(node.body)+
-            '}'
+            '})'
     }
 
     function compileNumber(node) {
         return node.value
+    }
+
+    function repeatString(s, n) {
+        var repetitions = new Array(n), i
+        for (i = 0; i < n; i++) {
+            repetitions[i] = s
+        }
+        return repetitions.join('')
     }
 })();
