@@ -13,6 +13,8 @@ module.exports = (function() {
                 return compileStringData(node)
             case 'Expression':
                 return compileExpression(node)
+            case 'ConditionedExpression':
+                return compileConditionedExpression(node)
             case 'PipeableExpression':
                 return compilePipeableExpression(node)
             case 'Invocation':
@@ -36,6 +38,10 @@ module.exports = (function() {
     }
 
     function compileExpression(node) {
+        return '('+compile(node.condition)+')?('+compile(node.value)+'):('+compile(node.alternative)+')'
+    }
+
+    function compileConditionedExpression(node) {
         // translate pipes, e.g. a >> b >> c, into function composition, e.g.
         // c(b(a))
 

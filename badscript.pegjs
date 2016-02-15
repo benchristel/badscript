@@ -22,6 +22,22 @@ Root = _ exp:Expression _
 { return exp }
 
 Expression
+  = first:ConditionedExpression conditional:(Space Conditional)?
+{
+  if (conditional === null) {
+    return first
+  }
+
+  return {
+    type: 'Expression',
+    value: first,
+    condition:   conditional[1].condition,
+    negated:     conditional[1].negated,
+    alternative: conditional[1].alternative
+  }
+}
+
+ConditionedExpression
   = first:PipeableExpression rest:(_ '>>' _ PipeableExpression)*
 {
   if (rest.length == 0) {
@@ -29,7 +45,7 @@ Expression
   }
 
   return {
-    type: 'Expression',
+    type: 'ConditionedExpression',
     pipeableExpressions: [first].concat(rest.map(function(exp) { return exp[3] }))
   }
 }
@@ -79,6 +95,21 @@ Number
   return {
     type: 'Number',
     value: flatten(digits).join('')
+  }
+}
+
+/**
+ * CONDITIONALS
+ *
+ */
+
+Conditional
+  = 'if' Space condition:Expression Space 'else' Space alternative:Expression
+{
+  return {
+    condition: condition,
+    alternative: alternative,
+    negated: false
   }
 }
 
@@ -204,3 +235,6 @@ FunctionBody
 
 _ "whitespace"
   = [ \t\n\r]*
+
+Space "whitespace"
+  = [ \t\n\r]+
