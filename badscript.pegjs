@@ -28,12 +28,20 @@ Expression
     return first
   }
 
+  var value, alternative
+  if (conditional[1].negated) {
+    value = conditional[1].alternative
+    alternative = first
+  } else {
+    value = first
+    alternative = conditional[1].alternative
+  }
+
   return {
     type: 'Expression',
-    value: first,
+    value: value,
     condition:   conditional[1].condition,
-    negated:     conditional[1].negated,
-    alternative: conditional[1].alternative
+    alternative: alternative
   }
 }
 
@@ -104,12 +112,26 @@ Number
  */
 
 Conditional
+  = c:IfElseConditional { return c }
+  / c:ButIfThenConditional { return c }
+
+IfElseConditional
   = 'if' Space condition:Expression Space 'else' Space alternative:Expression
 {
   return {
     condition: condition,
     alternative: alternative,
     negated: false
+  }
+}
+
+ButIfThenConditional
+  = 'but' Space 'if' Space condition:Expression Space 'then' Space alternative:Expression
+{
+  return {
+    condition: condition,
+    alternative: alternative,
+    negated: true
   }
 }
 

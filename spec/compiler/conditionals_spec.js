@@ -15,4 +15,11 @@ describe('compiling conditionals', function() {
 
         expect(compileJS(badscript)).toEqual(expected)
     })
+
+    it('works with "X but if Y then Z" syntax', function() {
+        var badscript = "1 but if foo then 2"
+        var expected = "(foo)?(2):(1)"
+
+        expect(compileJS(badscript)).toEqual(expected)
+    })
 })
