@@ -13,6 +13,10 @@ I've used a Faux-O style in a few projects I've worked on, and it seems like a w
 
 BadScript _by itself_ is actually not capable of implementing a full Faux-O system. Gary describes the pattern of an "imperative shell" that manages side-effecty operations and calls into the "functional core", but it is not possible to write imperative code in BadScript. Therefore, all mutation of state has to be done by the environment in which BadScript is running. This environment might consist of JavaScript code that calls BadScript functions, or it might be the BadOS operating system (still in early-stage development).
 
+## Don't Use It
+
+BadScript is known to be bad. It compiles to JavaScript, after all, and introduces probably more weird behaviors than JavaScript had already. It almost certainly has performance issues in places you wouldn't expect. It will happily compile statements whose behavior is not defined by the spec. If you try to use it in a production system, you're most likely in for a hilarious sequence of events that will end in you getting fired. So please, don't do it.
+
 ## Syntax
 
 A program in BadScript must consist of exactly one expression. (Since there is no mutation of data in BadScript, you never need to have multiple statements in a program.)
