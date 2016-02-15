@@ -18,6 +18,6 @@ describe('compiling pipe expressions', function() {
     })
 
     it('applies the >> operator with the lowest precedence', function() {
-        expect(compileJS('a(d, 2) >> b(1) >> (x) { x }')).toEqual('(function(x){return x})(b(1)(a(d,2)))')
+        expect(compileJS('a(d, 2) >> b(1) >> {(x) x }')).toEqual('(function(x){return x})(b(1)(a(d,2)))')
     })
 })

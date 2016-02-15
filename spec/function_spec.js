@@ -8,7 +8,7 @@ describe("a function definition", function() {
     }
 
     it("may have a list of parameters in parens", function() {
-        var result = parse("(a, b, c) { null }")
+        var result = parse("{ (a, b, c) null }")
         expect(result.parameters).toEqual([
             {type: 'Parameter', name: 'a', value: null},
             {type: 'Parameter', name: 'b', value: null},
@@ -17,12 +17,12 @@ describe("a function definition", function() {
     })
 
     it("must have a body containing an expression in curly braces", function() {
-        var result = parse("(a, b, c) { a }")
+        var result = parse("{ (a, b, c) a }")
         expect(result.body).toEqual({type: 'Identifier', name: 'a'})
     })
 
     it("may have an empty params list", function() {
-        var result = parse("() { null }")
+        var result = parse("{ () null }")
         expect(result.parameters).toEqual([])
     })
 
@@ -32,14 +32,14 @@ describe("a function definition", function() {
     })
 
     it("may have default arguments", function() {
-        var result = parse("(a:1) { a }")
+        var result = parse("{(a:1) a }")
         expect(result.parameters).toEqual([
             {type: 'Parameter', name: 'a', value: {type: 'Number', value: '1'}}
         ])
     })
 
     it("may be curried", function() {
-        var result = parse("(a)(b) { a }")
+        var result = parse("{(a)(b) a }")
         expect(result.parameters).toEqual([{type: 'Parameter', name: 'a', value: null}])
         expect(result.body).toEqual(
             {

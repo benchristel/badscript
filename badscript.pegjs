@@ -16,6 +16,12 @@ function isArray(thing) {
   return Object.prototype.toString.call(thing) === '[object Array]'
 }
 
+function get(n) {
+  return function(array) {
+    return array[n]
+  }
+}
+
 }
 
 Root = _ exp:Expression _
@@ -46,7 +52,8 @@ Expression
 }
 
 ConditionedExpression
-  = first:PipeableExpression rest:(_ '>>' _ PipeableExpression)*
+  = CaseExpression
+  / first:PipeableExpression rest:(_ '>>' _ PipeableExpression)*
 {
   if (rest.length == 0) {
     return first
@@ -61,7 +68,7 @@ ConditionedExpression
   / Number
 
 PipeableExpression
-  = head:InvocableExpression tail:Invocation*
+  = head:InvocableExpression tail:(_ Invocation)*
 {
   if (tail.length == 0) {
     return head
@@ -70,7 +77,7 @@ PipeableExpression
   return {
     type: 'PipeableExpression',
     invocable: head,
-    invocations: tail
+    invocations: tail.map(get(1))
   }
 }
 
@@ -89,7 +96,7 @@ Invocation
   }
 }
 
-Identifier = name: ([A-Za-z_][A-Za-z0-9_]*)
+Identifier 'identifier' = name: ([A-Za-z_][A-Za-z0-9_]*)
 {
   return {
     type: 'Identifier',
@@ -133,6 +140,37 @@ ButIfThenConditional
     alternative: alternative,
     negated: true
   }
+}
+
+CaseExpression
+  = cases:CaseList Space elseCase:ElseCase
+{
+  return {
+    type: 'CaseExpression',
+    cases: cases,
+    elseValue: elseCase
+  }
+}
+
+CaseList
+  = first:Case rest:(Space Case)*
+{
+  return [first].concat(rest.map(function(x) { return x[1] }))
+}
+
+Case
+  = 'when' Space condition:Expression Space 'then' Space value:Expression
+{
+  return {
+    condition: condition,
+    value: value
+  }
+}
+
+ElseCase
+  = 'else' Space value:Expression
+{
+  return value
 }
 
 /**
@@ -213,7 +251,7 @@ Interpolation
  */
 
 Function
-  = maybeParams: ParameterList? _ body: FunctionBody
+  = '{' _ maybeParams: ParameterList? _ body: FunctionBody _ '}'
 {
   var params = maybeParams ? maybeParams : []
   return {
@@ -222,7 +260,9 @@ Function
     body: body
   }
 }
-  / params: ParameterList _ body: Function
+
+CurryFunction
+  = params: ParameterList _ body: FunctionBody
 {
   return {
     type: 'Function',
@@ -253,7 +293,8 @@ Parameter = i:Identifier defaultValue:(_ ':' _ Expression)?
 }
 
 FunctionBody
-  = '{' _ expr:Expression _ '}' { return expr }
+  = expr:Expression { return expr }
+  / CurryFunction
 
 _ "whitespace"
   = [ \t\n\r]*

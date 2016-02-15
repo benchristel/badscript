@@ -44,7 +44,7 @@ describe("a function invocation", function() {
     })
 
     it("works on functions defined inline", function() {
-        var parsed = parse('(x) { x }(1)')
+        var parsed = parse('{(x) x }(1)')
 
         expect(parsed.type).toEqual('PipeableExpression')
         expect(parsed.invocable.type).toEqual('Function')

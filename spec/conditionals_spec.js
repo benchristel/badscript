@@ -28,4 +28,21 @@ describe('conditionals', function() {
         expect(parsed.value.value).toEqual('2')
         expect(parsed.alternative.value).toEqual('1')
     })
+
+    it('can have when..then syntax', function() {
+        var badscript =
+          "when foo then 1\n"+
+          "when bar then 2\n"+
+          "else 3"
+
+        var parsed = parse(badscript)
+
+        expect(parsed.type).toEqual('CaseExpression')
+        expect(parsed.cases.length).toEqual(2)
+        expect(parsed.cases[0].condition).toEqual({type: 'Identifier', name: 'foo'})
+        expect(parsed.cases[0].value).toEqual({type: 'Number', value: '1'})
+        expect(parsed.cases[1].condition).toEqual({type: 'Identifier', name: 'bar'})
+        expect(parsed.cases[1].value).toEqual({type: 'Number', value: '2'})
+        expect(parsed.elseValue).toEqual({type: 'Number', value: '3'})
+    })
 })

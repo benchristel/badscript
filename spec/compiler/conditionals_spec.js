@@ -22,4 +22,11 @@ describe('compiling conditionals', function() {
 
         expect(compileJS(badscript)).toEqual(expected)
     })
+
+    it('works with "when X then Y" syntax', function() {
+        var badscript = "when 1 then 2 when 3 then 4 else 0"
+        var expected = "(1)?(2):((3)?(4):(0))"
+
+        expect(compileJS(badscript)).toEqual(expected)
+    })
 })

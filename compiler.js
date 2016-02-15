@@ -15,6 +15,8 @@ module.exports = (function() {
                 return compileExpression(node)
             case 'ConditionedExpression':
                 return compileConditionedExpression(node)
+            case 'CaseExpression':
+                return compileCaseExpression(node)
             case 'PipeableExpression':
                 return compilePipeableExpression(node)
             case 'Invocation':
@@ -39,6 +41,12 @@ module.exports = (function() {
 
     function compileExpression(node) {
         return '('+compile(node.condition)+')?('+compile(node.value)+'):('+compile(node.alternative)+')'
+    }
+
+    function compileCaseExpression(node) {
+        return reverse(node.cases).reduce(function(elseValue, aCase) {
+            return "("+compile(aCase.condition)+")?("+compile(aCase.value)+"):("+elseValue+")"
+        }, compile(node.elseValue))
     }
 
     function compileConditionedExpression(node) {
@@ -87,5 +95,17 @@ module.exports = (function() {
             repetitions[i] = s
         }
         return repetitions.join('')
+    }
+
+    function reverse(array) {
+        var copy = array.slice(), i, iFromEnd
+
+        for (i = 0; i < array.length / 2; i++) {
+            iFromEnd = array.length - 1 - i
+            copy[i] = array[iFromEnd]
+            copy[iFromEnd] = array[i]
+        }
+
+        return copy
     }
 })();

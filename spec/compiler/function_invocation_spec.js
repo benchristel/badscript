@@ -26,6 +26,6 @@ describe('compiling function invocations', function() {
     })
 
     it('invokes a function defined inline', function() {
-        expect(compileJS('(x){x}(1, 2)')).toEqual('(function(x){return x})(1,2)')
+        expect(compileJS('{(x) x}(1, 2)')).toEqual('(function(x){return x})(1,2)')
     })
 })
