@@ -76,6 +76,14 @@ Here's a simple example of how this user object might be used. Note the `.firstN
 }
 ```
 
+## Compiling BadScript to JavaScript
+
+The `jsify` executable converts BadScript to JavaScript. It takes BadScript input on `STDIN` and outputs JS to `STDOUT`.
+
+```bash
+./jsify < foo.bs > foo.js
+```
+
 ## Development
 
 ```bash
