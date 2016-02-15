@@ -5,7 +5,7 @@ describe('compiling strings', function() {
     var Compiler = require('../../compiler.js')
 
     function compileJS(s) {
-        var parsed = Parser.parse(s, {startRule: 'String'})
+        var parsed = Parser.parse(s)
         return Compiler.compile(parsed)
     }
 

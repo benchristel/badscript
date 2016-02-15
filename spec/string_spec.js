@@ -4,7 +4,7 @@ describe("a string", function() {
     var Parser = require('../parser.js')
 
     function parse(s) {
-        return Parser.parse(s, {startRule: 'String'})
+        return Parser.parse(s)
     }
 
     it("may be surrounded by double quotes", function() {

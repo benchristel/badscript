@@ -5,7 +5,7 @@ describe('compiling function invocations', function() {
     var Compiler = require('../../compiler.js')
 
     function compileJS(s) {
-        var parsed = Parser.parse(s, {startRule: 'Expression'})
+        var parsed = Parser.parse(s)
         return Compiler.compile(parsed)
     }
 

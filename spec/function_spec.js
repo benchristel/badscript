@@ -4,7 +4,7 @@ describe("a function definition", function() {
     var Parser = require('../parser.js')
 
     function parse(s) {
-        return Parser.parse(s, {startRule: 'Expression'})
+        return Parser.parse(s)
     }
 
     it("may have a list of parameters in parens", function() {

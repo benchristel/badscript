@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+var Parser = require('./parser.js');
+var Compiler = require('./compiler.js');
+
+var badscript = "";
+process.stdin.on('readable', function() {
+  var chunk = process.stdin.read();
+  if (chunk !== null) {
+    badscript += chunk;
+  }
+});
+
+process.stdin.on('end', function() {
+  process.stdout.write(Compiler.compile(Parser.parse(badscript)) + "\n");
+});

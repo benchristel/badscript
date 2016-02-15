@@ -5,7 +5,7 @@ describe('compiling functions', function() {
     var Compiler = require('../../compiler.js')
 
     function compileJS(s) {
-        var parsed = Parser.parse(s, {startRule: 'Expression'})
+        var parsed = Parser.parse(s)
         return Compiler.compile(parsed)
     }
 
@@ -35,5 +35,9 @@ describe('compiling functions', function() {
 
     it('initializes parameters of curried functions', function() {
         expect(compileJS("(n:1)(p:2) { n }")).toEqual("(function(n){n=n!==undefined?n:1;return (function(p){p=p!==undefined?p:2;return n})})")
+    })
+
+    it('tolerates surrounding whitespace', function() {
+        expect(compileJS(" {1} ")).toEqual("(function(){return 1})")
     })
 })

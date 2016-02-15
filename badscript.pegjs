@@ -18,6 +18,9 @@ function isArray(thing) {
 
 }
 
+Root = _ exp:Expression _
+{ return exp }
+
 Expression
   = first:PipeableExpression rest:(_ '>>' _ PipeableExpression)*
 {

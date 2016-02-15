@@ -4,7 +4,7 @@ describe("an identifier", function() {
     var Parser = require('../parser.js')
 
     function parse(s) {
-        return Parser.parse(s, {startRule: 'Identifier'})
+        return Parser.parse(s)
     }
 
     it("may consist of alphanumeric characters and underscores", function() {
