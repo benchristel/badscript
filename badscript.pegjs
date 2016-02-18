@@ -53,7 +53,7 @@ Expression
 
 ConditionedExpression
   = CaseExpression
-  / first:PipeableExpression rest:(_ '>>' _ PipeableExpression)*
+  / first:PipeableExpression rest:(Space PipeableExpression)*
 {
   if (rest.length == 0) {
     return first
@@ -61,7 +61,7 @@ ConditionedExpression
 
   return {
     type: 'ConditionedExpression',
-    pipeableExpressions: [first].concat(rest.map(function(exp) { return exp[3] }))
+    pipeableExpressions: [first].concat(rest.map(get(1)))
   }
 }
   / String
@@ -96,13 +96,20 @@ Invocation
   }
 }
 
-Identifier 'identifier' = name: ([A-Za-z_][A-Za-z0-9_]*)
+Identifier 'identifier' = !ReservedWord name: ([A-Za-z_][A-Za-z0-9_]*)
 {
   return {
     type: 'Identifier',
     name: flatten(name).join('')
   }
 }
+
+ReservedWord
+  = "if"
+  / "but"
+  / "when"
+  / "else"
+  / "then"
 
 Number
   = digits:([0-9] / [1-9] Number)
