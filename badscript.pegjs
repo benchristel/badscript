@@ -68,7 +68,9 @@ ConditionedExpression
   / Number
 
 PipeableExpression
-  = head:InvocableExpression tail:(_ Invocation)*
+  = head:InvocableExpression tail:(_ Invocation)* !':'
+  // colon is forbidden at the end of a pipeable expression
+  // to avoid ambiguity in local name declarations
 {
   if (tail.length == 0) {
     return head
@@ -258,13 +260,14 @@ Interpolation
  */
 
 Function
-  = '{' _ maybeParams: ParameterList? _ body: FunctionBody _ '}'
+  = '{' _ maybeParams: ParameterList? _ body: FunctionBody _ localNames: LocalNames _ '}'
 {
   var params = maybeParams ? maybeParams : []
   return {
     type: 'Function',
     parameters: params,
-    body: body
+    body: body,
+    localNames: localNames
   }
 }
 
@@ -302,6 +305,18 @@ Parameter = i:Identifier defaultValue:(_ ':' _ Expression)?
 FunctionBody
   = expr:Expression { return expr }
   / CurryFunction
+
+LocalNames
+  = names:("---" (Space Identifier ':' _ Expression)*)?
+{
+  if (names === null || names[1] === null) {
+    return []
+  }
+
+  return names[1].map(function(name) {
+      return { name: name[1].name, value: name[4] }
+  })
+}
 
 _ "whitespace"
   = [ \t\n\r]*

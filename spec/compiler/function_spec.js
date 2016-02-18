@@ -40,4 +40,14 @@ describe('compiling functions', function() {
     it('tolerates surrounding whitespace', function() {
         expect(compileJS(" {1} ")).toEqual("(function(){return 1})")
     })
+
+    it('creates JS functions that lazily evaluate and cache intermediate values', function() {
+        var expected = "(function(f){"+
+          "return g();"+
+          "function g(){"+
+          "if(_bs_cache_g===void 0)_bs_cache_g=f(f);"+
+          "return _bs_cache_g}})"
+
+        expect(compileJS("{(f) g --- g: f(f)}")).toEqual(expected)
+    })
 })
