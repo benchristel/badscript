@@ -26,23 +26,17 @@ Here is a program that defines a simple `greeting(name)` function:
 
 ```
 # greeting.bs
-(name) {
+{ (name)
   "Hello, \(name)!"
+  but if name is(null) then "Hello, you person, you!"
 }
-```
-
-Function parameters may be anonymous. The `$` symbol represents an anonymous parameter.
-
-```
-# greeting2.bs
-{ "Hello, \($)!" }
 ```
 
 There are no variables (remember, no mutable state!) but values can be given names within a function.
 
 ```
 # name_for_sorting.bs
-(fullName) {
+{ (fullName)
   "\(lastName), \(firstName)"
 
   firstName: names.first
@@ -52,33 +46,6 @@ There are no variables (remember, no mutable state!) but values can be given nam
 ```
 
 Values are lazy and cached, so the work of splitting `fullName` is done only once in the above example.
-
-Defining object constructors is easy:
-
-```
-# user.bs
-(fullName) {
-  firstName: names.first
-  lastName:  names.last
-  ---
-  names:     fullName.split(/ /)
-}
-```
-
-This returns an object with `firstName` and `lastName` properties. The `names` value is private because it's below the `---` line.
-All properties are lazily evaluated and cached.
-
-Here's a simple example of how this user object might be used. Note the `.firstName` property access.
-
-```
-# first_names.bs
-# takes a list of strings and returns the first whitespace-separated word of each.
-(names) {
-  names.map(User).map({ $.firstName })
-  ---
-  User: import('user')
-}
-```
 
 ## Compiling BadScript to JavaScript
 
